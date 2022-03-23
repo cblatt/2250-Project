@@ -1,0 +1,24 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Written by Cameron Blatt
+
+public class Bullet : MonoBehaviour
+{
+    public float speed = 2000f; // setting the speed of the bullets
+    private Rigidbody rb;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        rb = this.GetComponent<Rigidbody>(); // getting the rigid body component
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+}
