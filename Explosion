@@ -1,0 +1,32 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Written by Cameron Blatt
+
+public class Explosion : MonoBehaviour
+{
+     
+    //A float value
+    private float Timer;
+    //Lifetime :B
+    public float lifetime;
+ 
+    void Start()
+    {   //Set A value to the current time plus the lifetime
+        //If the time is 0, then it will be 0.0 + 1
+        Timer = Time.time + lifetime;
+    }
+ 
+    void Update()
+    {       //As void Start is executed before update, then
+            //Time.time will be like 0.01 and Timer will be 1
+ 
+        //When Time.time reaches 1.001 this will be executed
+        if (Time.time > Timer)
+        {
+            //Destroy :P
+            Destroy(gameObject);
+        }
+    }
+}
