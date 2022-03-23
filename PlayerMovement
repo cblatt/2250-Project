@@ -1,0 +1,84 @@
+using UnityEngine;
+using System.Collections;
+
+// Written by Gerald Augustinepillai
+
+public class PlayerMovement : MonoBehaviour
+{
+
+	private Animator animation;
+	private CharacterController controller;
+
+	public float baseSpeed;
+	float currentSpeed;
+	public float rotateSpeed = 400.0f;
+	private Vector3 moveDirection = Vector3.zero;
+	public float gravity = 20.0f;
+	public float sprintSpeed = 1000.0f;
+	public float jump = 100.0f;
+	
+
+
+	void Start()
+	{
+		controller = GetComponent<CharacterController>();
+		animation = gameObject.GetComponentInChildren<Animator>();
+	}
+
+	void Update()
+	{
+		if (Input.GetKey("w") || Input.GetKey("a") || Input.GetKey("d"))
+		{
+			animation.SetInteger("AnimationPar", 1);
+			animation.speed = 1.0f;
+		}
+		else
+		{
+			animation.SetInteger("AnimationPar", 0);
+		}
+		if (Input.GetKey("s"))
+        {
+			animation.SetInteger("AnimationPar", 1);
+			animation.speed = 0.5f;
+        }
+		if (Input.GetKey(KeyCode.LeftShift))
+		{
+			currentSpeed = baseSpeed + sprintSpeed;
+			animation.speed = 2.0f;
+		}
+		
+		else
+        {
+			currentSpeed = baseSpeed;
+        }
+
+		if (controller.isGrounded)
+		{
+			moveDirection = transform.forward * Input.GetAxis("Vertical") * currentSpeed + transform.right * Input.GetAxis("Horizontal") * currentSpeed;
+			if (Input.GetKeyDown(KeyCode.Space))
+			{
+				moveDirection = transform.up * Input.GetAxis("Jump") * jump + transform.forward * Input.GetAxis("Vertical") * currentSpeed;
+			}
+		}
+        if (!controller.isGrounded)
+        {
+			animation.speed = 0.25f;
+        }
+
+		//float rotate = Input.GetAxis("Horizontal");
+		//transform.Rotate(0, rotate * rotateSpeed * Time.deltaTime, 0);
+		controller.Move(moveDirection * Time.deltaTime);
+		moveDirection.y -= gravity * Time.deltaTime;
+			
+	}
+
+	void OnTriggerEnter(Collider other)
+	{
+		if (other.gameObject.tag == "WaterZone") Resources.R.setWaterZone(true);
+	}
+
+	void OnTriggerExit(Collider other)
+	{
+		if (other.gameObject.tag == "WaterZone") Resources.R.setWaterZone(false);
+	}
+}
