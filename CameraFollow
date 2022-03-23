@@ -1,0 +1,22 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Written by Gerald Augustinepillai
+
+public class CameraFollow : MonoBehaviour
+{
+    public Transform target;
+    public float smoothSpeed = 0.5f;
+    public Vector3 offset;
+    public float cameraDistance = 10.0f;
+
+    void LateUpdate()
+    {
+        transform.position = target.transform.position - target.transform.forward * cameraDistance; 
+
+        transform.LookAt(target.transform.position);
+        transform.position = new Vector3(transform.position.x + offset.x, transform.position.y + 2 + offset.y, transform.position.z + offset.z); // setting the camera position with an offset
+    }
+
+}
