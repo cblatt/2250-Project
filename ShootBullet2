@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-Cameron Blatt
+// Written by Cameron Blatt
 
 public class ShootBullet2 : MonoBehaviour
 {
@@ -43,8 +43,14 @@ public class ShootBullet2 : MonoBehaviour
             Destroy(other.gameObject);
             Resources.R.addResources(5, 5, 5, 0);
         }
+        if (other.gameObject.tag == "Snowman")
+        {
+            Destroy(other.gameObject);
+            Resources.R.addResources(1, 5, 10, 0);
+        }
         GameObject e = Instantiate(explosion) as GameObject;
         e.transform.position = transform.position;
     }
 
 }
+
