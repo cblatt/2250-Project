@@ -1,0 +1,47 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Written by Cameron Blatt
+
+public class ShootBullet1 : MonoBehaviour
+{
+    public Transform player; // a
+    public GameObject bullet;
+    public GameObject spawnPosition;
+    private float speed = 2000;
+    private Rigidbody rb;
+    
+    // Start is called before the first frame update
+    void Start()
+    {
+        rb = this.GetComponent<Rigidbody>();
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if(Input.GetMouseButtonDown(0)){
+            shootBullet1();
+        }
+        
+    }
+    public void shootBullet1(){
+        GameObject b = Instantiate(bullet, spawnPosition.transform.position, Quaternion.identity) as GameObject;
+        b.GetComponent<Rigidbody>().AddForce(spawnPosition.transform.forward * speed);
+        
+    }
+    public void OnCollisionEnter(Collision other){
+        //if(other.tag == "Zombie")
+        // GameObject e = Instantiate(explosion) as GameObject
+        //e.transform.position = transform.position;
+        // destroy other.gameObject
+        Destroy(this.gameObject);
+        if (other.gameObject.tag == "Enemy")
+        {
+            Destroy(other.gameObject);
+            Resources.R.addResources(5, 5, 5, 0);
+        }
+    }
+}
