@@ -43,5 +43,10 @@ public class ShootBullet1 : MonoBehaviour
             Destroy(other.gameObject);
             Resources.R.addResources(5, 5, 5, 0);
         }
+        if (other.gameObject.tag == "Snowman")
+        {
+            Destroy(other.gameObject);
+            Resources.R.addResources(1, 5, 10, 0);
+        }
     }
 }
