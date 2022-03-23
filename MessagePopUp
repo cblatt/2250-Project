@@ -1,0 +1,48 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
+// Written by Gerald AugustinePillai
+
+public class MessagePopUP : MonoBehaviour
+{
+     //Add reference to UI Text here via the inspector
+    public Text introMessage;
+    public Text cometTimer;
+
+    private float timeToAppear = 7f; //After 7 seconds popup message will disappear
+    private float timeWhenDisappear;
+
+    public float endTime = 107f;
+
+    public static MessagePopUP M;
+
+    //Call to enable the text, which also sets the timer
+    public void Start()
+    {
+        introMessage.enabled = true;
+        cometTimer.enabled = false;
+        timeWhenDisappear = Time.time + timeToAppear;
+        M = this;
+    }
+
+    //We check every frame if the timer has expired and the text should disappear
+    public void Update()
+    {
+        if (introMessage.enabled == true && (Time.time >= timeWhenDisappear))
+        {
+            introMessage.enabled = false;
+            cometTimer.enabled = true;
+        }
+
+        endTime -= Time.deltaTime;
+        cometTimer.text = "Time before comet hits: " + endTime.ToString("0,#") + " seconds";
+        if (endTime <= 0)
+        {
+            SceneManager.LoadScene("GameOver");
+        }
+    }
+   
+}
