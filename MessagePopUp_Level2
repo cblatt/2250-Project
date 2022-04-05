@@ -1,0 +1,46 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
+//Created by Gerald Augustinepillai
+
+public class MessagePopUp_Level2 : MonoBehaviour
+{
+    public Text introMessage;
+    public Text escapeTimer;
+
+    public float endTime;
+
+    private float timeToAppear = 7f; //After 7 seconds popup message will disappear
+    private float timeWhenDisappear;
+
+    void Start()
+    {
+        introMessage.enabled = true;
+        escapeTimer.enabled = false;
+        timeWhenDisappear = Time.time + timeToAppear;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (introMessage.enabled == true && (Time.time >= timeWhenDisappear))
+        {
+            introMessage.enabled = false;
+            escapeTimer.enabled = true;
+        }
+
+        endTime -= Time.deltaTime;
+        escapeTimer.text = "Time before you leave: " + endTime.ToString("0,#") + " seconds";
+        if (endTime <= 0)
+        {
+            PlayerPrefs.SetFloat("food_level2", Resources.R.food); //Use this to pass variables between scenes
+            PlayerPrefs.SetFloat("fuel_level2", Resources.R.fuel); //Here we use it to get the resources from level 2 so we can give it to level 3
+            PlayerPrefs.SetFloat("water_level2", Resources.R.water);
+            PlayerPrefs.SetFloat("titanium_level2", Resources.R.titanium);
+            SceneManager.LoadScene("FinishedLevel2");
+        }
+    }
+}
