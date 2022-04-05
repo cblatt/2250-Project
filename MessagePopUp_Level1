@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-// Written by Gerald AugustinePillai
+//Created by Gerald Augustinepillai
 
-public class MessagePopUP : MonoBehaviour
+public class MessagePopUp_Level1 : MonoBehaviour
 {
      //Add reference to UI Text here via the inspector
     public Text introMessage;
@@ -15,9 +15,9 @@ public class MessagePopUP : MonoBehaviour
     private float timeToAppear = 7f; //After 7 seconds popup message will disappear
     private float timeWhenDisappear;
 
-    public float endTime = 107f;
+    public float endTime;
 
-    public static MessagePopUP M;
+    public static MessagePopUp_Level1 M;
 
     //Call to enable the text, which also sets the timer
     public void Start()
@@ -26,6 +26,8 @@ public class MessagePopUP : MonoBehaviour
         cometTimer.enabled = false;
         timeWhenDisappear = Time.time + timeToAppear;
         M = this;
+
+
     }
 
     //We check every frame if the timer has expired and the text should disappear
@@ -41,7 +43,11 @@ public class MessagePopUP : MonoBehaviour
         cometTimer.text = "Time before comet hits: " + endTime.ToString("0,#") + " seconds";
         if (endTime <= 0)
         {
-            SceneManager.LoadScene("GameOver");
+            PlayerPrefs.SetFloat("food_level1", Resources.R.food); //Use this to pass variables between scenes
+            PlayerPrefs.SetFloat("fuel_level1", Resources.R.fuel); //Here we use it to get the resources from level 1 so we can give it to level 2
+            PlayerPrefs.SetFloat("water_level1", Resources.R.water);
+            PlayerPrefs.SetFloat("titanium_level1", Resources.R.titanium);
+            SceneManager.LoadScene("FinishedLevel1");
         }
     }
    
