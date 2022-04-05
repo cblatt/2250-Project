@@ -1,0 +1,40 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+//Created by Cameron Blatt
+
+public class ThrowWrench2 : MonoBehaviour
+{
+    public Transform player;
+    public GameObject wrench;
+    public GameObject spawnPosition;
+    private float speed = 2000;
+    private Rigidbody rb;
+    public GameObject explosion;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        rb = this.GetComponent<Rigidbody>();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if(Input.GetMouseButtonDown(1)){
+            throwWrench();
+        }   
+    }
+    public void throwWrench(){
+        GameObject b = Instantiate(wrench, spawnPosition.transform.position, Quaternion.identity) as GameObject;
+        b.GetComponent<Rigidbody>().AddForce(spawnPosition.transform.forward * speed);
+    }
+    public void OnCollisionEnter(Collision other){
+        if(this.gameObject.tag == "Wrench"){
+            Destroy(this.gameObject);
+            GameObject e = Instantiate(explosion) as GameObject;
+            e.transform.position = transform.position;
+        }
+    }
+}
