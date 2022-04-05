@@ -1,0 +1,110 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.SceneManagement;
+
+//Created by Mathew Stephen
+
+public class SnowmanScript : MonoBehaviour
+{
+    public float lookRadius = 60f;
+    public float attackRadius = 15f;
+    public GameObject snowball;
+    public GameObject spawnPosition;
+
+    float lastAttackTime = 0f;
+    float AttackCoolDown = 2f;
+
+    Transform target;
+    NavMeshAgent agent;
+
+    float time = 0;
+    float timeDelay = 5;
+
+    private Rigidbody rb;
+    private float speed = 2000;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        target = PLayerManager.instance.player.transform;
+        agent = GetComponent<NavMeshAgent>();
+        
+        time = 0;
+        timeDelay = 5;
+
+        rb = this.GetComponent<Rigidbody>();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        float distance = Vector3.Distance(target.position, transform.position);
+        time = time + 1f * Time.deltaTime;
+
+        if (distance < lookRadius)
+        {
+            FaceTarget();
+            if (distance < 25)
+            {
+                if (time >= timeDelay)
+                {   
+                    throwSnowball();
+                    time = 0f;
+                }
+            }
+            else
+            {
+                agent.SetDestination(target.position);
+            }
+        }
+
+        if(AttackCoolDown >= 0)
+        {
+            AttackCoolDown -= Time.deltaTime;
+        }
+
+        if (GameObject.FindGameObjectsWithTag("Snowman").Length <= 0)
+        {
+            PlayerPrefs.SetFloat("food_level2", Resources.R.food); //Use this to pass variables between scenes
+            PlayerPrefs.SetFloat("fuel_level2", Resources.R.fuel); //Here we use it to get the resources from level 2 so we can give it to level 3
+            PlayerPrefs.SetFloat("water_level2", Resources.R.water);
+            PlayerPrefs.SetFloat("titanium_level2", Resources.R.titanium);
+            SceneManager.LoadScene("FinishedLevel2");
+        }
+    }
+    public void throwSnowball(){
+        //GameObject b = Instantiate(snowball, spawnPosition.transform.position, Quaternion.identity) as GameObject;
+        //            b.GetComponent<Rigidbody>().AddForce(spawnPosition.transform.forward * speed);
+
+        GameObject b = Instantiate(snowball, spawnPosition.transform.position, Quaternion.identity) as GameObject;
+        b.GetComponent<Rigidbody>().AddForce(spawnPosition.transform.forward * speed);
+
+    }
+
+    void OnDrawGizmosSelected ()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, lookRadius);
+    }
+
+    public void OnCollisionEnter(Collision col)
+    {
+        Destroy(this.gameObject);
+        Resources.R.addResources(0, 0, 5, 0);
+        //if (col.gameObject.tag == "Player")
+        //{
+        //    HealthSystemScript.H.GotHitFor(10);
+        //    AttackCoolDown = 5;
+        //    Destroy(col.gameObject);
+        //}
+    }
+
+    public void FaceTarget()
+    {
+        Vector3 direction = (target.position - transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, direction.y, direction.z));
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
+    }
+}
