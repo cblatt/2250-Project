@@ -1,0 +1,123 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.SceneManagement;
+
+public class GolemControlScript : MonoBehaviour
+{
+    public static GolemControlScript G;
+    public float lookRadius; // radius that the enemies can see you
+    public float attackRadius; // radius that the enemies can attack you
+
+    float lastAttackTime = 0f;
+    float AttackCoolDown = 2f;
+    float delay = 5f;
+
+    float health = 100f;
+
+    Animator animation;
+
+    Transform target;
+    UnityEngine.AI.NavMeshAgent agent;
+    // Start is called before the first frame update
+    void Start()
+    {
+        target = PLayerManager.instance.player.transform;
+        agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        animation = gameObject.GetComponentInChildren<Animator>();
+
+        G = this;
+        animation.SetBool("isStopped", true);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        float distance = Vector3.Distance(target.position, transform.position);
+        if (distance < lookRadius)
+        {
+            if (distance < 8)
+            {
+                StopEnemy();
+                FaceTarget();
+                animation.SetBool("isAttacking", true);
+            
+                if (AttackCoolDown <=0)
+                {
+                    HealthSystemScript.H.AddToCurrentHealth(-30);
+                    AttackCoolDown = 5; 
+                }
+            }
+            else
+            {
+                GoToTarget();
+                animation.SetBool("isAttacking", false);
+                animation.SetBool("isRunning", true);
+            }
+
+            delay += Time.deltaTime;
+        }
+
+        if(AttackCoolDown >= 0)
+        {
+            AttackCoolDown -= Time.deltaTime;
+        }
+
+
+
+        if (this.health <= 0)
+        {
+            Destroy(this.gameObject);
+            Resources.R.addResources(10, 10, 0, 0);
+        }
+
+        if (GameObject.FindGameObjectsWithTag("Golem").Length <= 0)
+        {
+            PlayerPrefs.SetFloat("food_level3", Resources.R.food); //Use this to pass variables between scenes
+            PlayerPrefs.SetFloat("fuel_level3", Resources.R.fuel); //Here we use it to get the resources from level 2 so we can give it to level 3
+            PlayerPrefs.SetFloat("water_level3", Resources.R.water);
+            PlayerPrefs.SetFloat("titanium_level3", Resources.R.titanium);
+            SceneManager.LoadScene("FinishedGame");
+        }
+    }
+
+    void OnDrawGizmosSelected ()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, lookRadius);
+    }
+
+    private void GoToTarget()
+    {
+        agent.SetDestination(target.position);
+        animation.SetBool("isRunning", true);
+        animation.SetBool("isStopped", false);
+        animation.SetBool("isAttacking", false);
+    }
+
+    private void AttackPlayer()
+    {
+        animation.SetBool("isAttacking", true);
+        animation.SetBool("isStopped", false);
+    }
+
+    private void StopEnemy()
+    {
+        animation.SetBool("isStopped", true);
+        animation.SetBool("isRunning", false);
+        
+    }
+
+    public void FaceTarget()
+    {
+        Vector3 direction = (target.position - transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, direction.y, direction.z));
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
+    }
+
+    public void TakeDamage(float dmg)
+    {
+        this.health = this.health - dmg;
+    }
+}
