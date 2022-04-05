@@ -1,0 +1,108 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
+//Created by Mathew Stephen and Gerald Augustinepillai
+
+public class Resources : MonoBehaviour
+{
+    public static Resources R;
+
+    public Text Fuel;
+    public Text Titanium;
+    public Text Food;
+    public Text Water;
+
+    public float fuel = 50;
+    public float titanium = 50;
+    public float food = 50;
+    public float water = 50;
+
+    private bool inWaterZone;
+
+    float time = 0f;
+    float timeDelay = 3f;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        Fuel.gameObject.GetComponent<Text>();
+        Food.gameObject.GetComponent<Text>();
+        Titanium.gameObject.GetComponent<Text>();
+        Water.gameObject.GetComponent<Text>();
+
+        Fuel.text = "Fuel: " + fuel;
+        Food.text = "Food: " + food;
+        Titanium.text = "Titanium: " + titanium;
+        Water.text = "Water: " + water;
+
+        R = this;
+
+        time = 0f;
+        timeDelay = 3f;
+
+        if(SceneManager.GetActiveScene().name == "Cyllarus")
+        {
+            if (PlayerPrefs.HasKey("fuel_level1"))
+            {
+                fuel = PlayerPrefs.GetFloat("fuel_level1"); //If player is on level 2, use the resource values from level 1
+                food = PlayerPrefs.GetFloat("food_level1");
+                water = PlayerPrefs.GetFloat("water_level1");
+                titanium = PlayerPrefs.GetFloat("titanium_level1");
+            } 
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        Fuel.text = "Fuel: " + fuel;
+        Food.text = "Food: " + food;
+        Titanium.text = "Titanium: " + titanium;
+        Water.text = "Water: " + water;
+
+        time = time + 1f * Time.deltaTime;
+        if (time >= timeDelay)
+        {
+            time = 0f;
+            fuel -= .5f;
+            food -= .5f;
+            titanium -= .5f;
+            water -= .5f;
+            if (inWaterZone == true)
+            {
+                water += 2f;
+            }
+        }
+
+
+        if(fuel == 0 || food == 0 || titanium == 0 || water == 0)
+        {
+            SceneManager.LoadScene("GameOver");
+        }
+    }
+
+    public void setWaterZone(bool input)
+    {
+        inWaterZone = input;
+    }
+
+    public void addResources(float f, float fd, float tnm, float wtr)
+    {
+        fuel += f;
+        food += fd;
+        titanium += tnm;
+        water += wtr;
+    }
+
+    /*public void getResources(int key)
+    {
+        if (key == 1) return fuel;
+        if (key == 2) return food;
+        if (key == 3) return titanium;
+        if (key == 4) return water;
+        else return;
+    }*/
+}
