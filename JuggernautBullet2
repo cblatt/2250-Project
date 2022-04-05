@@ -1,0 +1,49 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+//Created by Cameron Blatt
+
+public class JuggernautBullet2 : MonoBehaviour
+{
+    public Transform player;
+    public GameObject bullet;
+    public GameObject spawnPosition1;
+    public GameObject spawnPosition2;
+    public GameObject spawnPosition3;
+
+    private float speed = 2000;
+    private Rigidbody rb;
+
+    private float waitTime = 0.2f;
+    private float timeStamp = Mathf.Infinity;
+    
+    // Start is called before the first frame update
+    void Start()
+    {
+        rb = this.GetComponent<Rigidbody>();
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {    
+        if(Input.GetMouseButtonDown(1)){
+            shootBullet2();
+        }
+    }
+    public void shootBullet2(){
+        GameObject b1 = Instantiate(bullet, spawnPosition1.transform.position, Quaternion.identity) as GameObject;
+        b1.GetComponent<Rigidbody>().AddForce(spawnPosition1.transform.forward * speed);
+
+        GameObject b2 = Instantiate(bullet, spawnPosition2.transform.position, Quaternion.identity) as GameObject;
+        b2.GetComponent<Rigidbody>().AddForce(spawnPosition2.transform.forward * speed);
+
+        GameObject b3 = Instantiate(bullet, spawnPosition3.transform.position, Quaternion.identity) as GameObject;
+        b3.GetComponent<Rigidbody>().AddForce(spawnPosition3.transform.forward * speed);
+        
+    }
+    public void OnCollisionEnter(Collision other){
+        Destroy(this.gameObject);
+    }
+}
