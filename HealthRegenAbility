@@ -1,0 +1,36 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+//Created by Gerald Augustinepillai
+
+public class HealthRegenAbility : MonoBehaviour
+{
+    public Text abilityCooldown;
+    public float regenCooldown = 0;
+    // Start is called before the first frame update
+    void Start()
+    {
+        abilityCooldown = GameObject.Find("HealthCooldown").GetComponent<Text>();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetKey("q") && regenCooldown <= 0 && HealthSystemScript.H.CurrentHealthPercentage < 100) //Health regen ability
+        {
+            HealthSystemScript.H.AddToCurrentHealth(15);
+            regenCooldown = 5;
+        }
+        if (regenCooldown >= 0)
+        { //For cooldown timer in the top left side
+            abilityCooldown.text = "Health Regen: " + regenCooldown.ToString("0") + " seconds";
+            regenCooldown -= Time.deltaTime;
+            if (regenCooldown <= 0)
+            {
+                abilityCooldown.text = "Health Regen: 0 seconds";
+            }
+        }
+    }
+}
