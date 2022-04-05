@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 //Created by Gerald Augustinepillai
 //Use this script to display resources after each level
+
 public class ShowResources_AfterLevel : MonoBehaviour
 {
     public Text Fuel;
