@@ -1,0 +1,59 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
+//Created by Gerald Augustinepillai
+//Use this script to display resources after each level
+public class ShowResources_AfterLevel : MonoBehaviour
+{
+    public Text Fuel;
+    public Text Titanium;
+    public Text Food;
+    public Text Water;
+
+    float fuel, food, water, titanium;
+    // Start is called before the first frame update
+    void Start()
+    {
+        if (SceneManager.GetActiveScene().name == "FinishedLevel1") //Gets resource values from level 1
+        {
+            fuel = PlayerPrefs.GetFloat("fuel_level1");
+            food = PlayerPrefs.GetFloat("food_level1");
+            water = PlayerPrefs.GetFloat("water_level1");
+            titanium = PlayerPrefs.GetFloat("titanium_level1");
+        }
+
+        if (SceneManager.GetActiveScene().name == "FinishedLevel2") //Gets resource values from level 2
+        {
+            fuel = PlayerPrefs.GetFloat("fuel_level2");
+            food = PlayerPrefs.GetFloat("food_level2");
+            water = PlayerPrefs.GetFloat("water_level2");
+            titanium = PlayerPrefs.GetFloat("titanium_level2");
+        }
+
+        if (SceneManager.GetActiveScene().name == "FinishedGame") //Gets resource values from level 3
+        {
+            fuel = PlayerPrefs.GetFloat("fuel_level3");
+            food = PlayerPrefs.GetFloat("food_level3");
+            water = PlayerPrefs.GetFloat("water_level3");
+            titanium = PlayerPrefs.GetFloat("titanium_level3");
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        Fuel.text = "Fuel: " + fuel;
+        Food.text = "Food: " + food;
+        Titanium.text = "Titanium: " + titanium;
+        Water.text = "Water: " + water;
+
+        if (Input.GetKey("return"))
+        {
+            if (SceneManager.GetActiveScene().name == "FinishedLevel1") SceneManager.LoadScene("Cyllarus");
+            if (SceneManager.GetActiveScene().name == "FinishedLevel2") SceneManager.LoadScene("Ozarth");
+        }
+    }
+}
