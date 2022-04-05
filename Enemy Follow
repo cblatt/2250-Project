@@ -1,0 +1,112 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.SceneManagement;
+
+//Created by Mathew Stephen
+
+public class EnemyFollowPLayer : MonoBehaviour
+{
+    public float lookRadius = 45f; // radius that the enemies can see you
+    public float attackRadius = 3f; // radius that the enemies can attack you
+
+    float lastAttackTime = 0f;
+    float AttackCoolDown = 2f;
+
+    Animator animation;
+
+    Transform target;
+    NavMeshAgent agent;
+    // Start is called before the first frame update
+    void Start()
+    {
+        target = PLayerManager.instance.player.transform;
+        agent = GetComponent<NavMeshAgent>();
+        animation = gameObject.GetComponentInChildren<Animator>();
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        float distance = Vector3.Distance(target.position, transform.position);
+
+        if (distance < lookRadius)
+        {
+            if (distance < 4)
+            {
+                StopEnemy();
+                FaceTarget();
+                animation.SetBool("isAttacking", true);
+                /*if (Time.time - lastAttackTime > AttackCoolDown); 
+                {
+                    lastAttackTime = Time.time;
+                    //target.GetComponent<HealthSystemScript>().GotHitFor(2); //Makes player take 2 damage per frame of being stopped
+                    HealthSystemScript.H.GotHitFor(3);
+    }*/
+                if (AttackCoolDown <=0)
+                {
+                    HealthSystemScript.H.AddToCurrentHealth(-10);
+                    AttackCoolDown = 2;
+                }
+            }
+            else
+            {
+                GoToTarget();
+                animation.SetBool("isAttacking", false);
+            }
+        }
+
+        if(AttackCoolDown >= 0)
+        {
+            AttackCoolDown -= Time.deltaTime;
+        }
+
+        if (this.gameObject == null)
+        {
+            
+        }
+
+        if(GameObject.FindGameObjectsWithTag("Enemy").Length <= 0)
+        {
+            SceneManager.LoadScene("FinishedLevel1");
+        }
+    }
+
+    void OnDrawGizmosSelected ()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, lookRadius);
+    }
+
+    private void GoToTarget()
+    {
+        agent.SetDestination(target.position);
+        animation.SetBool("isRunning", true);
+        animation.SetBool("isStopped", false);
+        animation.SetBool("isAttacking", false);
+    }
+
+    private void AttackPlayer()
+    {
+        animation.SetBool("isAttacking", true);
+        animation.SetBool("isStopped", false);
+    }
+
+    private void StopEnemy()
+    {
+        animation.SetBool("isStopped", true);
+        animation.SetBool("isRunning", false);
+        
+    }
+
+    public void FaceTarget()
+    {
+        Vector3 direction = (target.position - transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, direction.y, direction.z));
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
+    }
+
+    
+}
