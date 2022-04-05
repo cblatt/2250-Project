@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 
+//Created by Mathew Stephen
+
 public class GolemControlScript : MonoBehaviour
 {
     public static GolemControlScript G;
