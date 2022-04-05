@@ -1,0 +1,53 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+//Created by Cameron Blatt
+
+public class JuggernautBullet1 : MonoBehaviour
+{
+    public Transform player;
+    public GameObject bullet;
+    public GameObject spawnPosition;
+    private float speed = 2000;
+    private Rigidbody rb;
+
+    private float waitTime = 0.2f;
+    private float timeStamp = Mathf.Infinity;
+    
+    // Start is called before the first frame update
+    void Start()
+    {
+        rb = this.GetComponent<Rigidbody>();
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {    
+        if(Input.GetMouseButtonDown(0)){
+            timeStamp = Time.time + waitTime;
+        }
+        if(Input.GetMouseButtonUp(0)){
+            timeStamp = Mathf.Infinity;
+        }
+        if(Time.time >= timeStamp){
+            shootBullet1();
+            timeStamp = Time.time + waitTime;
+        }
+    }
+    public void shootBullet1(){
+        GameObject b = Instantiate(bullet, spawnPosition.transform.position, Quaternion.identity) as GameObject;
+        b.GetComponent<Rigidbody>().AddForce(spawnPosition.transform.forward * speed);
+        
+    }
+    public void OnCollisionEnter(Collision other)
+    {
+        Destroy(this.gameObject);
+        if (other.gameObject.tag == "Golem")
+        {
+            other.gameObject.GetComponent<GolemControlScript>().TakeDamage(30);
+        }
+    }
+}
+
