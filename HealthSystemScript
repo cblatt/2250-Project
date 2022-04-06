@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
-// Written by Gerald Augustinepillai
+//Created by Gerald Augustinepillai
 
 public class HealthSystemScript : MonoBehaviour
 {
     public static HealthSystemScript H;
-    public Text abilityCooldown;
+
     public bool IsAlive;
     public float CurrentHealth = 1000;
     public float MaximumHealth = 1000;
@@ -14,7 +15,7 @@ public class HealthSystemScript : MonoBehaviour
     public bool HasAnimationWhenHealthChanges = true;
     public float AnimationDuration = 0.1f;
 
-    public float regenCooldown = 0;
+
 
     public float CurrentHealthPercentage
     {
@@ -128,24 +129,16 @@ public class HealthSystemScript : MonoBehaviour
     }
 
     void Start() { 
-        abilityCooldown = GameObject.Find("HealthCooldown").GetComponent<Text>();
+        
         H = this;
     }
 
     void Update()
     {
-        if (Input.GetKey("q") && regenCooldown <= 0 && CurrentHealthPercentage < 100) //Health regen ability
-        { 
-            AddToCurrentHealth(15);           
-            regenCooldown = 5;
-        }
-        if (regenCooldown >= 0) { //For cooldown timer in the top left side
-            abilityCooldown.text = "Health Regen: " + regenCooldown.ToString("0") + " seconds";
-            regenCooldown -= Time.deltaTime;
-            if(regenCooldown <= 0)
-            {
-                abilityCooldown.text = "Health Regen: 0 seconds";
-            }
+        
+        if(CurrentHealth <= 0)
+        {
+            SceneManager.LoadScene("GameOver");
         }
     }
 }
