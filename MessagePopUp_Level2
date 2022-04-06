@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+//Created by Gerald Augustinepillai
+//This script is used for both level 2 and level 3 even though it is called MessagePopUp_Level2
+
 public class MessagePopUp_Level2 : MonoBehaviour
 {
     public Text introMessage;
